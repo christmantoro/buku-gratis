@@ -1,25 +1,70 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import { 
+    ChakraProvider, 
+    VStack, 
+    Heading, 
+    Center, 
+    Text, 
+    Tabs,
+    TabList,
+    Tab,
+    TabPanel,
+    TabPanels, } from '@chakra-ui/react'
+import Discover from "./components/Discover"
+
+export default function App() {
+
+  const [allBooks, setAllBooks] = useState ([])
+  const [refreshData, setRefreshData] = useState ([false])
+
+  const fetchData = () => {
+    setRefreshData(!refreshData)
+  }
+
+  useEffect (() => {
+    fetch ('http: //127.0.0.1:8000/books')
+    .then (response => response.json())
+    .then(data => setAllBooks)
+  }, [refreshData]
+  )
+
+  console.log(allBooks)
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <ChakraProvider>
+        <Center bg= "black" color= "white" padding = {8} >
 
-export default App;
+            <VStack spacing= {7}>
+                <Heading> Buku Gratis</Heading>
+                <Text> Temukan Rangkuman Buku Favorite Kamu Disini </Text>
+                <Tabs variant={"soft-rounded"} colorScheme="red">
+                    <Center> 
+                        <TabList>
+                            <Tab>
+                                <Heading>Pencarian</Heading>
+                            </Tab>
+                            <Tab>
+                                <Heading>Katalog Buku</Heading>
+                            </Tab>
+                        </TabList>
+                    </Center>
+                    <TabPanels>
+                      <TabPanel>
+                        <Discover refreshData={fetchData}/>
+                      </TabPanel>
+                      <TabPanel> 
+                        <p>Hello Library</p>
+                        </TabPanel>
+                    </TabPanels>
+
+
+                </Tabs>
+
+
+            </VStack>
+
+        </Center>
+    
+    </ChakraProvider>
+  )
+}
